@@ -1,4 +1,4 @@
-package main
+package restapi
 
 import (
 	"encoding/json"
@@ -21,9 +21,6 @@ type Author struct {
 	LastName  string `json:"lastname"`
 }
 
-func createBook(q http.ResponseWriter, r *http.Request) {
-
-}
 func getBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -35,21 +32,16 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(&Book{})
 }
-func updateBook(q http.ResponseWriter, r *http.Request) {
-	fmt.Print("delete book")
-}
+
 func getBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(books)
-}
-func deleteBook(q http.ResponseWriter, r *http.Request) {
-	fmt.Print("delete book")
 }
 
 //Init book variables as slice Book struct
 var books []Book
 
-func main() {
+func RegisterAPIs() {
 	fmt.Println("Hello world!")
 
 	//router
@@ -62,8 +54,5 @@ func main() {
 	//Route handlers
 	r.HandleFunc("/api/books", getBooks).Methods("GET")
 	r.HandleFunc("/api/books/{id}", getBook).Methods("GET")
-	r.HandleFunc("/api/books", createBook).Methods("POST")
-	r.HandleFunc("/api/books/{id}", updateBook).Methods("PUT")
-	r.HandleFunc("/api/books/{id}", deleteBook).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }

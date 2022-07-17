@@ -1,21 +1,25 @@
-package main
+package sqsutil
 
 import (
 	"context"
-	"fmt"
 	"log"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
-func main() {
-	ctx := context.Background()
-	fmt.Print("Calling sqs client")
+func GetSQSClient(ctx context.Context) *sqs.Client {
+	cfg := getAWSConfig(ctx)
+	client := sqs.NewFromConfig(cfg)
+	return client
+}
 
-	client := GetSQSClient(ctx)
-	output, err := client.ListQueues(ctx, nil)
+func getAWSConfig(ctx context.Context) aws.Config {
+	// Load the Shared AWS Configuration (~/.aws/config)
+	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, v := range output.QueueUrls {
-		fmt.Printf("queue url is %s", v)
-	}
+	return cfg
 }
